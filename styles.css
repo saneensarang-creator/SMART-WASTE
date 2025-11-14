@@ -839,6 +839,13 @@ body {
     transform: translateY(-3px);
 }
 
+/* Developers names in footer */
+.footer .dev-names {
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    color: #ddd;
+}
+
 /* Animations */
 @keyframes slideInLeft {
     from {

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Settings - SMART WASTE</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .settings-page { max-width: 900px; margin: 2rem auto; padding: 1rem; }
+    .settings-card { background:#fff; padding:1rem; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+    .setting-row { display:flex; justify-content:space-between; align-items:center; padding:0.75rem 0; border-bottom:1px solid #f0f0f0; }
+    .toggle { display:inline-flex; align-items:center; gap:0.5rem; }
+    .small { font-size:0.9rem; color:#666; }
+    .theme-preview { padding:0.75rem; border-radius:6px; margin-top:0.5rem; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo"><a href="index.html"><img src="images/WhatsApp Image 2025-11-14 at 2.51.28 AM.jpeg" alt="SMART WASTE" class="logo-img" style="filter:brightness(0.8) contrast(1.05); width:96px; height:96px; object-fit:cover; border-radius:10px;"></a></div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="settings-page">
+    <a href="index.html">← Back</a>
+    <h1>Site Settings</h1>
+
+    <div class="settings-card">
+      <h3>Preferences</h3>
+
+      <div class="setting-row">
+        <div>
+          <strong>Notifications</strong>
+          <div class="small">Enable browser notifications for important updates.</div>
+        </div>
+        <div class="toggle">
+          <input id="notifToggle" type="checkbox" />
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Email Notifications</strong>
+          <div class="small">Receive email summaries about pickups and reports.</div>
+        </div>
+        <div class="toggle">
+          <input id="emailToggle" type="checkbox" />
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Auto-sync</strong>
+          <div class="small">Automatically sync local schedules to server when online.</div>
+        </div>
+        <div class="toggle">
+          <select id="syncFreq">
+            <option value="manual">Manual</option>
+            <option value="onconnect">On Connect</option>
+            <option value="5min">Every 5 minutes</option>
+            <option value="30min">Every 30 minutes</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem;"><h3>Appearance</h3></div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Theme</strong>
+          <div class="small">Choose between Light and Dark modes.</div>
+        </div>
+        <div class="toggle">
+          <label><input type="radio" name="theme" value="light" id="themeLight"> Light</label>
+          <label style="margin-left:0.5rem;"><input type="radio" name="theme" value="dark" id="themeDark"> Dark</label>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>Compact Mode</strong>
+          <div class="small">Reduce spacing for denser layouts.</div>
+        </div>
+        <div class="toggle">
+          <input id="compactToggle" type="checkbox" />
+        </div>
+      </div>
+
+      <div style="margin-top:1rem; display:flex; gap:8px;">
+        <button id="btnSaveSettings" class="btn btn-primary">Save Settings</button>
+        <button id="btnResetSettings" class="btn">Reset</button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="local-database.js"></script>
+  <script src="collection-database.js"></script>
+  <script src="script.js"></script>
+  <script>
+    // Manage settings UI and persistence
+    const SETTINGS_KEY = 'smartwaste_settings_v1';
+
+    function loadSettings() {
+      const raw = localStorage.getItem(SETTINGS_KEY);
+      let settings = {
+        notifications: false,
+        emailNotifications: false,
+        syncFrequency: 'manual',
+        theme: 'light',
+        compact: false
+      };
+      try {
+        if (raw) settings = Object.assign(settings, JSON.parse(raw));
+      } catch (err) { console.warn('Invalid settings stored', err); }
+
+      document.getElementById('notifToggle').checked = !!settings.notifications;
+      document.getElementById('emailToggle').checked = !!settings.emailNotifications;
+      document.getElementById('syncFreq').value = settings.syncFrequency || 'manual';
+      document.getElementById('compactToggle').checked = !!settings.compact;
+      if (settings.theme === 'dark') document.getElementById('themeDark').checked = true;
+      else document.getElementById('themeLight').checked = true;
+
+      // Apply theme immediately
+      setTheme(settings.theme);
+    }
+
+    function saveSettings() {
+      const s = {
+        notifications: document.getElementById('notifToggle').checked,
+        emailNotifications: document.getElementById('emailToggle').checked,
+        syncFrequency: document.getElementById('syncFreq').value,
+        theme: document.getElementById('themeDark').checked ? 'dark' : 'light',
+        compact: document.getElementById('compactToggle').checked
+      };
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+      // Apply theme and compact mode
+      setTheme(s.theme);
+      if (s.compact) document.body.classList.add('compact-mode'); else document.body.classList.remove('compact-mode');
+      alert('Settings saved');
+    }
+
+    function resetSettings() {
+      localStorage.removeItem(SETTINGS_KEY);
+      document.getElementById('notifToggle').checked = false;
+      document.getElementById('emailToggle').checked = false;
+      document.getElementById('syncFreq').value = 'manual';
+      document.getElementById('compactToggle').checked = false;
+      document.getElementById('themeLight').checked = true;
+      setTheme('light');
+      alert('Settings reset to defaults');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      document.getElementById('btnSaveSettings').addEventListener('click', (e) => { e.preventDefault(); saveSettings(); });
+      document.getElementById('btnResetSettings').addEventListener('click', (e) => { e.preventDefault(); resetSettings(); });
+      document.getElementById('themeLight').addEventListener('change', () => { if (document.getElementById('themeLight').checked) setTheme('light'); });
+      document.getElementById('themeDark').addEventListener('change', () => { if (document.getElementById('themeDark').checked) setTheme('dark'); });
+    });
+  </script>
+</body>
+</html>

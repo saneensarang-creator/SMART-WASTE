@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SMART WASTE</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .admin-header h1 {
+            color: var(--dark-color);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .admin-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .control-card h2 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .control-card p {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .control-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .control-section label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .control-section input,
+        .control-section select,
+        .control-section textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        .control-section input:focus,
+        .control-section select:focus,
+        .control-section textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(26, 188, 156, 0.2);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-control {
+            padding: 0.7rem 1.3rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-primary-control {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary-control:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3);
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary-control {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary-control:hover {
+            background: #e0e0e0;
+        }
+
+        .list-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 1.5rem;
+        }
+
+        .list-container h3 {
+            color: var(--dark-color);
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .list-item {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #eee;
+        }
+
+        .list-item-info {
+            flex: 1;
+        }
+
+        .list-item-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .list-item-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .list-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .status-inactive {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1rem;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .control-buttons {
+                flex-direction: column;
+            }
+
+            .btn-control {
+                width: 100%;
+            }
+
+            .list-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .list-item-actions {
+                width: 100%;
+                margin-top: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html"><img src="images/smart-waste-logo.svg" alt="SMART WASTE Logo" class="logo-img"></a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Container -->
+    <div class="admin-container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="admin-header">
+            <h1>🔐 Admin Dashboard</h1>
+            <div style="display:flex; gap:1rem;">
+                <span style="color:#666; font-weight:600;">Total Users: <span id="totalUsers">0</span></span>
+                <span style="color:#666; font-weight:600;">Collections: <span id="totalCollections">0</span></span>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="statsUsers">0</div>
+                <div class="stat-label">Registered Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="statsCollections">0</div>
+                <div class="stat-label">Active Collections</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="statsSchedules">0</div>
+                <div class="stat-label">Schedules</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="statsExports">0</div>
+                <div class="stat-label">Exports</div>
+            </div>
+        </div>
+
+        <!-- Admin Controls -->
+        <div class="admin-controls">
+            <!-- Users Management -->
+            <div class="control-card">
+                <h2>👥 Users Management</h2>
+                <p>Manage user accounts and permissions</p>
+                <div class="control-section">
+                    <label for="userSearch">Search User:</label>
+                    <input type="text" id="userSearch" placeholder="Enter email...">
+                </div>
+                <div class="control-buttons">
+                    <button class="btn-control btn-primary-control" onclick="searchUser()">Search</button>
+                    <button class="btn-control btn-secondary-control" onclick="listAllUsers()">List All</button>
+                </div>
+                <div id="userListContainer" class="list-container" style="display:none;">
+                    <h3>Users List</h3>
+                    <div id="usersList"></div>
+                </div>
+            </div>
+
+            <!-- Collections Management -->
+            <div class="control-card">
+                <h2>🗑️ Collections Control</h2>
+                <p>Manage waste collection requests</p>
+                <div class="control-section">
+                    <label for="collectionFilter">Filter by Type:</label>
+                    <select id="collectionFilter">
+                        <option value="">All Types</option>
+                        <option value="recycling">Recycling</option>
+                        <option value="organic">Organic Waste</option>
+                        <option value="hazardous">Hazardous</option>
+                        <option value="general">General Waste</option>
+                    </select>
+                </div>
+                <div class="control-buttons">
+                    <button class="btn-control btn-primary-control" onclick="listCollections()">View Collections</button>
+                    <button class="btn-control btn-secondary-control" onclick="clearOldCollections()">Clear Archived</button>
+                </div>
+                <div id="collectionListContainer" class="list-container" style="display:none;">
+                    <h3>Collections List</h3>
+                    <div id="collectionsList"></div>
+                </div>
+            </div>
+
+            <!-- Schedule Management -->
+            <div class="control-card">
+                <h2>📅 Schedule Management</h2>
+                <p>Control and manage collection schedules</p>
+                <div class="control-section">
+                    <label for="scheduleCity">Filter by City:</label>
+                    <input type="text" id="scheduleCity" placeholder="City name...">
+                </div>
+                <div class="control-buttons">
+                    <button class="btn-control btn-primary-control" onclick="viewSchedules()">View Schedules</button>
+                    <button class="btn-control btn-secondary-control" onclick="exportScheduleData()">Export Data</button>
+                </div>
+                <div id="scheduleListContainer" class="list-container" style="display:none;">
+                    <h3>Schedules</h3>
+                    <div id="schedulesList"></div>
+                </div>
+            </div>
+
+            <!-- Site Settings -->
+            <div class="control-card">
+                <h2>⚙️ Site Settings</h2>
+                <p>Configure site-wide settings</p>
+                <div class="control-section">
+                    <label for="siteName">Site Name:</label>
+                    <input type="text" id="siteName" placeholder="SMART WASTE">
+                </div>
+                <div class="control-section">
+                    <label for="siteStatus">Site Status:</label>
+                    <select id="siteStatus">
+                        <option value="active">Active</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="offline">Offline</option>
+                    </select>
+                </div>
+                <div class="control-buttons">
+                    <button class="btn-control btn-primary-control" onclick="updateSiteSettings()">Save Settings</button>
+                    <button class="btn-control btn-secondary-control" onclick="resetSettings()">Reset to Default</button>
+                </div>
+            </div>
+
+            <!-- Database Control -->
+            <div class="control-card">
+                <h2>💾 Database Control</h2>
+                <p>Manage application data and backups</p>
+                <div class="control-buttons">
+                    <button class="btn-control btn-primary-control" onclick="exportAllData()">Export All Data</button>
+                    <button class="btn-control btn-secondary-control" onclick="backupDatabase()">Backup DB</button>
+                    <button class="btn-control btn-danger" onclick="clearAllData()">Clear Database</button>
+                </div>
+            </div>
+
+            <!-- System Health -->
+            <div class="control-card">
+                <h2>🏥 System Health</h2>
+                <p>Monitor system status and performance</p>
+                <div id="systemStatus" style="margin-top:1rem;">
+                    <div style="padding:0.8rem; background:#f0f0f0; border-radius:6px;">
+                        <p><strong>Storage Usage:</strong> <span id="storageUsage">Calculating...</span></p>
+                        <p><strong>Total Users:</strong> <span id="systemUsers">0</span></p>
+                        <p><strong>Database Size:</strong> <span id="dbSize">Calculating...</span></p>
+                    </div>
+                </div>
+                <div class="control-buttons" style="margin-top:1rem;">
+                    <button class="btn-control btn-secondary-control" onclick="checkSystemHealth()">Refresh Status</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="local-database.js"></script>
+    <script src="collection-database.js"></script>
+    <script src="language.js"></script>
+    <script>
+        // Prevent direct access to admin dashboard - users must login through admin modal
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const adminLoginUsed = sessionStorage.getItem('adminAuthenticated');
+            
+            // Block access if user is not authenticated or if they haven't used the admin login
+            if (!user || !user.email || !adminLoginUsed) {
+                alert('Unauthorized: Please login through the Admin option to access the dashboard');
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>

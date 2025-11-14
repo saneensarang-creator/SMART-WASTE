@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Schedules Admin</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; padding: 1rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f4f4f4; }
+    .btn { padding: 6px 10px; border: 0; background: #e74c3c; color: white; cursor: pointer; }
+    .btn.small { padding: 4px 8px; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h2>Scheduled Pickups</h2>
+  <div>
+    <label>Filter collectionId: <input id="filterId" /></label>
+    <button id="refreshBtn">Refresh</button>
+  </div>
+  <table id="schedulesTable" style="margin-top:1rem">
+    <thead><tr><th>ID</th><th>Collection ID</th><th>Scheduled At</th><th>Created At</th><th>Meta</th><th>Actions</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const tbody = document.querySelector('#schedulesTable tbody');
+    const filterId = document.getElementById('filterId');
+    const refreshBtn = document.getElementById('refreshBtn');
+
+    async function load() {
+      const q = filterId.value ? `?collectionId=${encodeURIComponent(filterId.value)}` : '';
+      const res = await fetch(`/api/schedules${q}`);
+      const data = await res.json();
+      if (!data.success) return alert('Failed to load schedules');
+      render(data.data || []);
+    }
+
+    function render(items) {
+      tbody.innerHTML = '';
+      if (!items.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#666">No schedules</td></tr>';
+        return;
+      }
+      items.forEach(it => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${it.id}</td>
+          <td>${it.collectionId}</td>
+          <td>${it.scheduledAt}</td>
+          <td>${it.createdAt}</td>
+          <td>${it.confirmationNumber || ''}${it.contactName?'<br/>'+it.contactName:''}${it.address?'<br/>'+it.address:''}</td>
+          <td><button class="btn small" onclick="del(${it.id})">Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function del(id) {
+      if (!confirm('Delete schedule #' + id + '?')) return;
+      const res = await fetch('/api/schedules/' + id, { method: 'DELETE' });
+      const data = await res.json();
+      if (!data.success) return alert('Failed to delete');
+      load();
+    }
+
+    refreshBtn.addEventListener('click', load);
+    window.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>

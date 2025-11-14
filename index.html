@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART WASTE -</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Montserrat Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        #canvas-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        canvas {
+            display: block;
+        }
+        
+        /* Connection status indicator removed */
+        
+    </style>
+</head>
+<body class="front-page">
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html"><img src="images/WhatsApp Image 2025-11-14 at 2.51.28 AM.jpeg" alt="SMART WASTE Logo Photo" class="logo-img front-logo"></a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#" id="loginBtn" class="nav-link" onclick="openLoginModal(event)">Login</a></li>
+            </ul>
+            <div class=\"hamburger\">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+                <div id="profileContainer" style="display:none; position:relative; margin-left:12px;">
+                    <button id="profileToggle" class="btn" style="padding:0.4rem 0.6rem;">Profile</button>
+                    <div id="profileMenu" style="display:none; position:absolute; right:0; top:42px; background:#fff; border-radius:6px; box-shadow:0 6px 18px rgba(0,0,0,0.12); padding:0.5rem; min-width:220px; z-index:1000;">
+                        <div id="profileInfo" style="padding:0.5rem 0;">
+                            <strong id="profileEmail">user@example.com</strong>
+                            <div style="font-size:0.85rem;color:#666;" id="profileMember">Member since: --</div>
+                        </div>
+                        <hr style="margin:6px 0;border:none;border-top:1px solid #eee;">
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <button id="btnProfile" class="btn" style="text-align:left;">My Profile</button>
+                            <button id="btnSettings" class="btn" style="text-align:left;">Settings</button>
+                            <button id="btnLogout" class="btn" style="text-align:left;">Logout</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="adminContainerBefore" style="position:relative; margin-left:12px;">
+                    <button id="adminBtnBefore" class="btn" style="padding:0.4rem 0.6rem;" onclick="checkAdminAuth(event)">Admin</button>
+                </div>
+                <div id="languageContainer" style="position:relative; margin-left:12px;">
+                    <button id="languageBtnBefore" class="btn" style="padding:0.4rem 0.6rem;" onclick="toggleLanguageDropdown()">🌐 EN</button>
+                    <div id="languageDropdown" style="display:none; position:absolute; right:0; top:42px; background:#fff; border-radius:6px; box-shadow:0 6px 18px rgba(0,0,0,0.12); padding:0.5rem; min-width:200px; z-index:1000; max-height:400px; overflow-y:auto;">
+                        <!-- Languages will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+        </div>
+    </nav>
+
+
+    <!-- Hero Section with 3D Animation -->
+    <section id="home" class="hero">
+        <div id="canvas-container">
+            <video id="heroVideo" autoplay muted loop playsinline>
+                <source src="vedio/Green and White Floral Stress Management Presentation.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <button class="btn btn-primary" onclick="scrollToSection('services')">Get Started</button>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <h2>Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🗑️</div>
+                <h3>Collection</h3>
+                <p>Professional waste collection from residential and commercial properties</p>
+                <div style="margin-top:1rem;">
+                    <button class="btn" onclick="scrollToSection('collections')">Request Collection</button>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">♻️</div>
+                <h3>Recycling</h3>
+                <p>Advanced recycling processes to reduce waste and conserve resources</p>
+                <div style="margin-top:1rem;">
+                    <button class="btn" onclick="window.location.href='recycling_preview.html'">Preview</button>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🗺️</div>
+                <h3>Location</h3>
+                <p>Find nearest waste management facilities and drop-off locations near you</p>
+                <div style="margin-top:1rem;">
+                    <button class="btn" onclick="window.location.href='maps.html'">View on Map</button>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🤖</div>
+                <h3>AI Helpdesk</h3>
+                <p>Smart AI-powered assistance for waste management queries</p>
+                <div style="margin-top:1rem;">
+                    <button class="btn" onclick="window.location.href='ai-helpdesk.html'">Ask Me</button>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">💨</div>
+                <h3>CO Detector</h3>
+                <p>Real-time Carbon Monoxide level monitoring and safety alerts</p>
+                <div style="margin-top:1rem;">
+                    <button class="btn" onclick="window.location.href='co-monitor.html'">Monitor CO</button>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">👥</div>
+                <h3>Social</h3>
+                <p>Connect with the community and share waste management experiences</p>
+                <div style="margin-top:1rem;">
+                    <button class="btn" onclick="window.location.href='social.html'">Join Community</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collections Section (inline collection form and tools) -->
+    <section id="collections" class="collections">
+        <h2>Request a Collection</h2>
+        <div class="collections-container">
+            <form id="collectionForm" class="collection-form">
+                <h3>Submit Request</h3>
+                <div class="form-row">
+                    <input type="text" id="c_address" placeholder="Address" required>
+                    <input type="text" id="c_city" placeholder="City" required>
+                </div>
+                <div class="form-row">
+                    <input type="text" id="c_postal" placeholder="Postal Code">
+                    <input type="text" id="c_contactName" placeholder="Contact Name" required>
+                </div>
+                <div class="form-row">
+                    <input type="tel" id="c_contactPhone" placeholder="Contact Phone" required>
+                    <select id="c_type" required>
+                        <option value="">Select Type</option>
+                        <option value="recycling">Recycling</option>
+                        <option value="organic">Organic Waste</option>
+                        <option value="hazardous">Hazardous</option>
+                        <option value="general">General Waste</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <textarea id="c_notes" placeholder="Notes (optional)" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                    <button type="button" class="btn" id="refreshCollections">Refresh List</button>
+                </div>
+            </form>
+
+            <div class="collections-list">
+                <h3>Active Requests</h3>
+                <div style="margin-bottom:0.5rem;">
+                    <button class="btn" id="exportSchedulesBtn">Export Local Schedules</button>
+                    <button class="btn" id="syncSchedulesBtn">Sync Local Schedules to Server</button>
+                    <button class="btn" id="exportDbBtn">Export Local Database</button>
+                    <button class="btn" id="importDbBtn">Import Local Database</button>
+                    <input id="importFileInput" type="file" accept="application/json" style="display:none" />
+                </div>
+                <div id="collectionsList">
+                    <p style="padding:1rem;color:#888;">No requests yet. Submit one above!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <!-- About Section -->
+    <section id="about" class="about">
+        <h2>About SMART WASTE</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <h3>Leading the Way in Sustainable Waste Management</h3>
+                <p>SMART WASTE is dedicated to providing comprehensive waste management solutions that protect our environment and promote sustainability. With over a decade of experience, we've helped thousands of businesses and communities reduce their environmental impact.</p>
+                <ul class="benefits-list">
+                    <li>✓ 99% Waste Diversion Rate</li>
+                    <li>✓ ISO 14001 Certified</li>
+                    <li>✓ 24/7 Customer Support</li>
+                    <li>✓ Cost-Effective Solutions</li>
+                </ul>
+            </div>
+            <div class="about-stats">
+                <div class="stat">
+                    <h4>10,000+</h4>
+                    <p>Tons Recycled</p>
+                </div>
+                <div class="stat">
+                    <h4>500+</h4>
+                    <p>Clients Served</p>
+                </div>
+                <div class="stat">
+                    <h4>15+</h4>
+                    <p>Years Experience</p>
+                </div>
+                <div class="stat">
+                    <h4>99%</h4>
+                    <p>Satisfaction Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Finder removed from front page (moved to dedicated facilities page) -->
+
+    
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <h2>Get in Touch</h2>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Contact Information</h3>
+                <div class="info-item">
+                    <strong>📞 Phone:</strong> (555) 123-4567
+                </div>
+                <div class="info-item">
+                    <strong>📧 Email:</strong> info@smartwaste.com
+                </div>
+                <div class="info-item">
+                    <strong>📍 Address:</strong> 123 Green Street, Eco City, EC 12345
+                </div>
+                <div class="info-item">
+                    <strong>🕐 Hours:</strong> Mon-Fri 8AM-6PM, Sat 9AM-2PM
+                </div>
+            </div>
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Your Message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Login/Register Modal -->
+    <div id="authModal" class="auth-modal" style="display:none;">
+        <div class="auth-modal-content">
+            <button class="auth-close-btn" onclick="closeAuthModal()">&times;</button>
+            
+            <!-- Sign In Tab -->
+            <div id="signInTab" class="auth-tab active">
+                <h2>Sign In</h2>
+                <form id="signInForm">
+                    <div class="form-group">
+                        <label for="signInEmail">Email</label>
+                        <input type="email" id="signInEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signInPassword">Password</label>
+                        <input type="password" id="signInPassword" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+                </form>
+                <p class="auth-toggle-text">Don't have an account? <a href="#" onclick="switchTab('signUpTab', event)">Sign Up</a></p>
+            </div>
+            
+            <!-- Sign Up Tab -->
+            <div id="signUpTab" class="auth-tab">
+                <h2>Sign Up</h2>
+                
+                <!-- Sign Up Type Selection -->
+                <div class="signup-type-selector" style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                        <button type="button" class="signup-type-btn active" data-type="user" onclick="switchSignupType('user', event)" style="flex: 1; padding: 0.75rem; border: 2px solid #1abc9c; background: #1abc9c; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">User</button>
+                        <button type="button" class="signup-type-btn" data-type="admin" onclick="switchSignupType('admin', event)" style="flex: 1; padding: 0.75rem; border: 2px solid #ddd; background: white; color: #333; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">Admin</button>
+                    </div>
+                </div>
+
+                <!-- User Sign Up Form -->
+                <div id="userSignupForm" class="signup-form-container">
+                    <form id="signUpForm">
+                        <div class="form-group">
+                            <label for="signUpEmail">Email</label>
+                            <input type="email" id="signUpEmail" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpPassword">Password</label>
+                            <input type="password" id="signUpPassword" placeholder="Create a password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpConfirmPassword">Confirm Password</label>
+                            <input type="password" id="signUpConfirmPassword" placeholder="Confirm your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up as User</button>
+                    </form>
+                </div>
+
+                <!-- Admin Sign Up Form -->
+                <div id="adminSignupForm" class="signup-form-container" style="display: none;">
+                    <form id="adminSignUpFormModal">
+                        <div class="form-group">
+                            <label for="adminSignUpEmailModal">Email</label>
+                            <input type="email" id="adminSignUpEmailModal" placeholder="Enter your admin email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminSignUpPasswordModal">Password</label>
+                            <input type="password" id="adminSignUpPasswordModal" placeholder="Create a password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminSignUpConfirmPasswordModal">Confirm Password</label>
+                            <input type="password" id="adminSignUpConfirmPasswordModal" placeholder="Confirm your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up as Admin</button>
+                    </form>
+                </div>
+
+                <p class="auth-toggle-text">Already have an account? <a href="#" onclick="switchTab('signInTab', event)">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Authentication Modal -->
+    <div id="adminAuthModal" class="auth-modal" style="display:none;">
+        <div class="auth-modal-content">
+            <button class="auth-close-btn" onclick="closeAdminAuthModal()">&times;</button>
+            
+            <!-- Admin Login Tab -->
+            <div id="adminLoginTab" class="admin-auth-tab">
+                <h2>Admin Login</h2>
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="adminLoginEmail">Email</label>
+                        <input type="email" id="adminLoginEmail" placeholder="Enter your admin email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminLoginPassword">Password</label>
+                        <input type="password" id="adminLoginPassword" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                </form>
+                <p class="auth-toggle-text">Don't have an admin account? <a href="#" onclick="switchAdminAuthTab('adminSignupTab', event)">Sign Up</a></p>
+            </div>
+            
+            <!-- Admin Signup Tab -->
+            <div id="adminSignupTab" class="admin-auth-tab active">
+                <h2>Admin Sign Up</h2>
+                <form id="adminSignupForm">
+                    <div class="form-group">
+                        <label for="adminSignupEmail">Email</label>
+                        <input type="email" id="adminSignupEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminSignupPassword">Password</label>
+                        <input type="password" id="adminSignupPassword" placeholder="Create a password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminSignupConfirmPassword">Confirm Password</label>
+                        <input type="password" id="adminSignupConfirmPassword" placeholder="Confirm your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
+                </form>
+                <p class="auth-toggle-text">Already have an admin account? <a href="#" onclick="switchAdminAuthTab('adminLoginTab', event)">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 SMART WASTE - Sustainable Waste Management. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#" class="social-icon">Facebook</a>
+            <a href="#" class="social-icon">Twitter</a>
+            <a href="#" class="social-icon">Instagram</a>
+        </div>
+    </footer>
+
+
+
+    <!-- 3D scene temporarily disabled because hero video is used as background -->
+    <!-- <script src="3d-scene.js"></script> -->
+    <script src="local-database.js"></script>
+    <script src="collection-database.js"></script>
+    <script src="language.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

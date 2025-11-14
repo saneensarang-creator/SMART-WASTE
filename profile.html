@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Profile - SMART WASTE</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .profile-page { max-width: 900px; margin: 2rem auto; padding: 1rem; }
+    .profile-card { background: #fff; padding: 1.25rem; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+    .profile-row { display:flex; gap:1rem; align-items:center; }
+    .small { font-size:0.9rem; color:#666; }
+    .history-list { margin-top:1rem; }
+    .history-item { padding:0.5rem; border-bottom:1px solid #f0f0f0; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo"><a href="index.html"><img src="images/WhatsApp Image 2025-11-14 at 2.51.28 AM.jpeg" alt="SMART WASTE" class="logo-img" style="filter:brightness(0.8) contrast(1.05); width:96px; height:96px; object-fit:cover; border-radius:10px;"></a></div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="profile-page">
+    <a href="index.html">← Back to Home</a>
+    <h1>Your Profile</h1>
+
+    <div id="profileCard" class="profile-card">
+      <div class="profile-row">
+        <div style="flex:1">
+          <h3 id="pEmail">user@example.com</h3>
+          <div id="pMember" class="small">Member since: --</div>
+          <div id="pLast" class="small">Last login: --</div>
+          <div id="pStatus" class="small">Status: --</div>
+        </div>
+        <div style="text-align:right">
+          <button id="btnEditProfile" class="btn">Edit Profile</button>
+          <button id="btnLogoutProfile" class="btn">Logout</button>
+        </div>
+      </div>
+
+      <section style="margin-top:1rem;">
+        <h4>Recent Login Activity</h4>
+        <div id="historyList" class="history-list small">
+          <p style="color:#888;">Loading history...</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="local-database.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const userRaw = localStorage.getItem('user');
+      if (!userRaw) {
+        alert('You are not logged in.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const userData = JSON.parse(userRaw);
+      const user = userDB.getUserById(userData.id) || userDB.getUserByEmail(userData.email);
+
+      const pEmail = document.getElementById('pEmail');
+      const pMember = document.getElementById('pMember');
+      const pLast = document.getElementById('pLast');
+      const pStatus = document.getElementById('pStatus');
+      const historyList = document.getElementById('historyList');
+
+      if (user) {
+        pEmail.textContent = user.email || userData.email || 'User';
+        pMember.textContent = user.createdAt ? 'Member since: ' + new Date(user.createdAt).toLocaleString() : '';
+        pLast.textContent = user.lastLogin ? 'Last login: ' + new Date(user.lastLogin).toLocaleString() : '';
+        pStatus.textContent = 'Status: ' + (user.isActive ? 'Active' : 'Inactive');
+
+        const history = userDB.getLoginHistory(user.id, 10);
+        if (!history || !history.length) {
+          historyList.innerHTML = '<p style="color:#888;">No recent activity found.</p>';
+        } else {
+          historyList.innerHTML = history.map(h => `
+            <div class="history-item">
+              <div><strong>${h.action.toUpperCase()}</strong> — ${new Date(h.timestamp).toLocaleString()}</div>
+              <div style="color:#666;font-size:0.85rem;">${h.userAgent} • ${h.ipAddress}</div>
+            </div>
+          `).join('');
+        }
+      } else {
+        pEmail.textContent = userData.email || 'User';
+        pMember.textContent = '';
+        pLast.textContent = '';
+        pStatus.textContent = '';
+        historyList.innerHTML = '<p style="color:#888;">Profile details not found.</p>';
+      }
+
+      // Logout from profile page
+      document.getElementById('btnLogoutProfile').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (user && user.id) userDB.recordLogout(user.id);
+        localStorage.removeItem('user');
+        alert('Logged out');
+        window.location.href = 'index.html';
+      });
+
+      document.getElementById('btnEditProfile').addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('Edit profile UI not implemented yet.');
+      });
+    });
+  </script>
+</body>
+</html>

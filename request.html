@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Request Collection - SMART WASTE</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .page-container { max-width: 960px; margin: 2rem auto; padding: 1rem; }
+    .back-link { margin-bottom: 1rem; display: inline-block; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo"><a href="index.html"><img src="images/WhatsApp Image 2025-11-14 at 2.51.28 AM.jpeg" alt="SMART WASTE" class="logo-img" style="filter:brightness(0.8) contrast(1.05); width:96px; height:96px; object-fit:cover; border-radius:10px;"></a></div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#services" class="nav-link">Services</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-container">
+    <a class="back-link" href="index.html">← Back to Home</a>
+    <h1>Request a Collection</h1>
+
+    <div class="collections-container">
+      <form id="collectionForm" class="collection-form">
+        <h3>Submit Request</h3>
+        <div class="form-row">
+            <input type="text" id="c_address" placeholder="Address" required>
+            <input type="text" id="c_city" placeholder="City" required>
+        </div>
+        <div class="form-row">
+            <input type="text" id="c_postal" placeholder="Postal Code">
+            <input type="text" id="c_contactName" placeholder="Contact Name" required>
+        </div>
+        <div class="form-row">
+            <input type="tel" id="c_contactPhone" placeholder="Contact Phone" required>
+            <select id="c_type" required>
+                <option value="">Select Type</option>
+                <option value="recycling">Recycling</option>
+                <option value="organic">Organic Waste</option>
+                <option value="hazardous">Hazardous</option>
+                <option value="general">General Waste</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <textarea id="c_notes" placeholder="Notes (optional)" rows="3"></textarea>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Submit Request</button>
+            <button type="button" class="btn" id="refreshCollections">Refresh List</button>
+        </div>
+      </form>
+
+      <div class="collections-list">
+        <h3>Active Requests</h3>
+        <div style="margin-bottom:0.5rem;">
+            <button class="btn" id="exportSchedulesBtn">Export Local Schedules</button>
+            <button class="btn" id="syncSchedulesBtn">Sync Local Schedules to Server</button>
+            <button class="btn" id="exportDbBtn">Export Local Database</button>
+            <button class="btn" id="importDbBtn">Import Local Database</button>
+            <input id="importFileInput" type="file" accept="application/json" style="display:none" />
+        </div>
+        <div id="collectionsList">
+          <p style="padding:1rem;color:#888;">No requests yet. Submit one above!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="local-database.js"></script>
+  <script src="collection-database.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

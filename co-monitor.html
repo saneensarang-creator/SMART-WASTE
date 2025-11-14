@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CO Monitor - SMART WASTE</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .co-monitor-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5fef5 0%, #e8f5e9 100%);
+        }
+
+        .monitor-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .monitor-header h1 {
+            color: var(--dark-color);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .monitor-header p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: gap 0.3s;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .speedometer-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .speedometer {
+            position: relative;
+            width: 300px;
+            height: 200px;
+        }
+
+        /* Speedometer gauge */
+        .gauge {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-bottom: 8px solid #333;
+            border-left: 8px solid #333;
+            border-right: 8px solid #333;
+            border-radius: 150px 150px 0 0;
+            background: conic-gradient(
+                to right,
+                #4caf50 0deg,
+                #4caf50 60deg,
+                #ff9800 60deg,
+                #ff9800 120deg,
+                #f44336 120deg,
+                #f44336 180deg
+            );
+            overflow: hidden;
+        }
+
+        .gauge::before {
+            content: '';
+            position: absolute;
+            width: 240px;
+            height: 160px;
+            background: white;
+            border-radius: 120px 120px 0 0;
+            top: 8px;
+            left: 30px;
+        }
+
+        /* Speedometer needle */
+        .needle {
+            position: absolute;
+            width: 6px;
+            height: 120px;
+            background: linear-gradient(to top, #333, #555);
+            bottom: 0;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-3px) rotate(-90deg);
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10;
+            border-radius: 3px;
+            box-shadow: 0 0 6px rgba(0,0,0,0.3);
+        }
+
+        .needle::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: #333;
+            border-radius: 50%;
+            bottom: -7px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 8px rgba(0,0,0,0.4);
+        }
+
+        /* Center circle */
+        .center-cap {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #333;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        /* Speedometer labels */
+        .gauge-labels {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 15px 20px 0;
+            box-sizing: border-box;
+            font-weight: 700;
+            font-size: 0.9rem;
+            z-index: 5;
+        }
+
+        .label-safe {
+            color: #4caf50;
+        }
+
+        .label-warning {
+            color: #ff9800;
+        }
+
+        .label-danger {
+            color: #f44336;
+        }
+
+        /* Digital readout */
+        .digital-readout {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .ppm-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #333;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 0.5rem;
+        }
+
+        .ppm-label {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* Status indicator */
+        .status-section {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .status-safe {
+            background: #c8e6c9;
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+        }
+
+        .status-warning {
+            background: #ffe0b2;
+            color: #e65100;
+            border: 2px solid #ff9800;
+            animation: pulse-warning 1.5s infinite;
+        }
+
+        .status-danger {
+            background: #ffcdd2;
+            color: #c62828;
+            border: 2px solid #f44336;
+            animation: pulse-danger 0.8s infinite;
+        }
+
+        @keyframes pulse-warning {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes pulse-danger {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+            }
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .control-buttons button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-start {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-start:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3);
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .co-monitor-container {
+                padding: 1rem;
+            }
+
+            .speedometer {
+                width: 250px;
+                height: 170px;
+            }
+
+            .ppm-display {
+                font-size: 2.2rem;
+            }
+
+            .speedometer-wrapper {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html"><img src="images/smart-waste-logo.svg" alt="SMART WASTE Logo" class="logo-img"></a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+                <li><a href="#" id="loginBtn" class="nav-link" onclick="openLoginModal(event)">Login</a></li>
+            </ul>
+            <div id="profileContainer" style="display:none; position:relative; margin-left:12px;">
+                <button id="profileToggle" class="btn" style="padding:0.4rem 0.6rem;">Profile</button>
+                <div id="profileMenu" style="display:none; position:absolute; right:0; top:42px; background:#fff; border-radius:6px; box-shadow:0 6px 18px rgba(0,0,0,0.12); padding:0.5rem; min-width:220px; z-index:1000;">
+                    <div id="profileInfo" style="padding:0.5rem 0;">
+                        <strong id="profileEmail">user@example.com</strong>
+                        <div style="font-size:0.85rem;color:#666;" id="profileMember">Member since: --</div>
+                    </div>
+                    <hr style="margin:6px 0;border:none;border-top:1px solid #eee;">
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        <button id="btnProfile" class="btn" style="text-align:left;">My Profile</button>
+                        <button id="btnSettings" class="btn" style="text-align:left;">Settings</button>
+                        <button id="btnLogout" class="btn" style="text-align:left;">Logout</button>
+                    </div>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CO Monitor Container -->
+    <div class="co-monitor-container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="monitor-header">
+            <h1>💨 Carbon Monoxide Monitor</h1>
+            <p>Real-time CO level detection and safety status</p>
+        </div>
+
+        <!-- Speedometer Display -->
+        <div class="speedometer-wrapper">
+            <div class="speedometer">
+                <div class="gauge">
+                    <div class="gauge-labels">
+                        <span class="label-safe">SAFE</span>
+                        <span class="label-warning">WARNING</span>
+                        <span class="label-danger">DANGER</span>
+                    </div>
+                    <div class="needle" id="coNeedle"></div>
+                    <div class="center-cap"></div>
+                </div>
+                <div class="digital-readout">
+                    <div class="ppm-display" id="ppmValue">0</div>
+                    <div class="ppm-label">ppm (parts per million)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Section -->
+        <div class="status-section">
+            <h2 style="margin-bottom:1rem; color:var(--dark-color);">Current Status</h2>
+            <div id="statusBadge" class="status-badge status-safe">✓ SAFE - Normal Air Quality</div>
+            <div style="margin-top:1rem; font-size:0.95rem; color:#666;">
+                <p><strong>Safe Zone:</strong> 0-35 ppm</p>
+                <p><strong>Warning Zone:</strong> 35-100 ppm</p>
+                <p><strong>Danger Zone:</strong> 100+ ppm</p>
+            </div>
+            <div class="control-buttons">
+                <button class="btn-start" onclick="startMonitoring()">Start Monitoring</button>
+                <button class="btn-reset" onclick="resetMonitor()">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="authModal" class="auth-modal" style="display:none;">
+        <div class="auth-modal-content">
+            <button class="auth-close-btn" onclick="closeAuthModal()">&times;</button>
+            <div id="signInTab" class="auth-tab active">
+                <h2>Sign In</h2>
+                <form id="signInForm">
+                    <div class="form-group">
+                        <label for="signInEmail">Email</label>
+                        <input type="email" id="signInEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signInPassword">Password</label>
+                        <input type="password" id="signInPassword" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+                </form>
+                <p class="auth-toggle-text">Don't have an account? <a href="#" onclick="switchTab('signUpTab', event)">Sign Up</a></p>
+            </div>
+            <div id="signUpTab" class="auth-tab">
+                <h2>Sign Up</h2>
+                <form id="signUpForm">
+                    <div class="form-group">
+                        <label for="signUpEmail">Email</label>
+                        <input type="email" id="signUpEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signUpPassword">Password</label>
+                        <input type="password" id="signUpPassword" placeholder="Create a password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signUpConfirmPassword">Confirm Password</label>
+                        <input type="password" id="signUpConfirmPassword" placeholder="Confirm your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
+                </form>
+                <p class="auth-toggle-text">Already have an account? <a href="#" onclick="switchTab('signInTab', event)">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="local-database.js"></script>
+    <script src="collection-database.js"></script>
+    <script src="script.js"></script>
+    <script src="co-monitor.js"></script>
+</body>
+</html>
